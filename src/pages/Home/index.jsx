@@ -1,29 +1,32 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { drawCards } from '../api/deckApi';
+import CardItem from '../components/CardItem';
 
-export default function Home() {
-  const [posts, setPosts] = useState([]);
+const Home = () => {
+  const [cards, setCards] = useState([]);
 
   useEffect(() => {
-    axios
-      .get("https://jsonplaceholder.typicode.com/posts?_limit=10")
-      .then((res) => setPosts(res.data));
+    const fetchCards = async () => {
+      const drawnCards = await drawCards();
+      setCards(drawnCards);
+    };
+    fetchCards();
   }, []);
 
-  console.log(posts);
   return (
-    <>
-      <div>
-        <h2>Lista de Posts</h2>
-        <ul>
-          {posts.map((post) => (
-            <li key={post.id}>
-              <Link to={`/detalhes/${post.id}`}>{post.title}</Link>
-            </li>
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-white p-8">
+      <h1 className="text-3xl font-bold text-center text-blue-800 mb-8">
+        🎴 Baralho Interativo
+      </h1>
+      <div className="flex justify-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {cards.map((card) => (
+            <CardItem key={card.code} card={card} />
           ))}
-        </ul>
+        </div>
       </div>
-    </>
+    </div>
   );
-}
+};
+
+export default Home;
